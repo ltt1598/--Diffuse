@@ -6,8 +6,8 @@ paused = False
 save_images = False
 
 # problem setting
-n = 1024
-scatter = 1
+n = 256
+scatter = 4
 res = n * scatter
 
 # physical parameters
@@ -27,6 +27,8 @@ t_n = ti.field(ti.f32, shape = (n,n))
 t_np1 = ti.field(ti.f32, shape = (n,n))
 # visualization
 pixels = ti.Vector.field(3, ti.f32, shape = (res, res))
+# pixels = ti.Vector.field(3, ti.f32)
+# ti.root.dense(ti.ij, n).dense(ti.ij, scatter).place(pixels)
 
 @ti.kernel
 def init():
