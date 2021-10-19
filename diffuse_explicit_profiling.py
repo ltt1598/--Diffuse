@@ -1,13 +1,13 @@
 import taichi as ti
-ti.init(arch = ti.cuda)
+ti.init(arch = ti.cuda, kernel_profiler=True)
 
 # control
-paused = True
+paused = False
 save_images = False
 
 # problem setting
-n = 64
-scatter = 8
+n = 1024
+scatter = 1
 res = n * scatter
 
 # physical parameters
@@ -99,8 +99,15 @@ my_gui = ti.GUI("Diffuse", (res, res))
 init()
 i = 0
 
-while my_gui.running:
-    
+# warm start the kernels
+diffuse(0)
+update_source_and_commit()
+temperature_to_color(t_np1, pixels, t_min, t_max)
+ti.clear_kernel_profile_info() # clear resutls
+
+# while my_gui.running:
+for debug_iter in range(100):
+
     for e in my_gui.get_events(ti.GUI.PRESS):
         if e.key == ti.GUI.ESCAPE:
             exit()
@@ -125,3 +132,5 @@ while my_gui.running:
         i += 1
     else:
         my_gui.show()
+
+ti.print_kernel_profile_info('count')
