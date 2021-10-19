@@ -15,6 +15,7 @@
 ├── diffuse_explicit.py
 ├── diffuse_explicit_2.py
 ├── diffuse_implicit.py
+├── diffuse_explicit_profiling.py
 └── requirements.txt
 ```
 
@@ -30,4 +31,3 @@
 - `Space` : 暂停/继续
 - `i` : 运行时导出图片/停止导出（导出的图片会存放在./images/目录下）
 - `r` : 重置
-
