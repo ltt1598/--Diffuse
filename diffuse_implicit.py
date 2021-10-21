@@ -92,7 +92,7 @@ def diffuse(dt: ti.f32):
     solver.factorize(ImcD)
 
     # linear solve: solve
-    t_np1.from_numpy(solver.solve(t_n)) # t_np1 = t_n + c*D*t_np1
+    t_np1.from_numpy(solver.solve(t_n)) # (I - c*D) t_np1 = t_n
 
 
 def update_source_and_commit():
