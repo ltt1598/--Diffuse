@@ -27,8 +27,8 @@ pixels = ti.Vector.field(3, ti.f32, shape = (res, res))
 
 # diffuse matrix
 n2 = n**2
-D_builder = ti.SparseMatrixBuilder(n2, n2, max_num_triplets=n2*5)
-I_builder = ti.SparseMatrixBuilder(n2, n2, max_num_triplets=n2)
+D_builder = ti.linalg.SparseMatrixBuilder(n2, n2, max_num_triplets=n2*5)
+I_builder = ti.linalg.SparseMatrixBuilder(n2, n2, max_num_triplets=n2)
 
 # temperature now and temperature next_time
 t_n = ti.field(ti.f32, shape = n2) # unrolled to 1-d array
@@ -37,7 +37,7 @@ t_np1 = ti.field(ti.f32, shape = n2) # unrolled to 1-d array
 ind = lambda i, j: i*n+j
 
 @ti.kernel
-def fillDiffusionMatrixBuilder(A: ti.sparse_matrix_builder()):
+def fillDiffusionMatrixBuilder(A: ti.types.sparse_matrix_builder()):
     for i,j in ti.ndrange(n, n):
         count = 0
         if i-1 >= 0:
@@ -55,7 +55,7 @@ def fillDiffusionMatrixBuilder(A: ti.sparse_matrix_builder()):
         A[ind(i,j), ind(i,j)] += -count
 
 @ti.kernel
-def fillEyeMatrixBuilder(A: ti.sparse_matrix_builder()):
+def fillEyeMatrixBuilder(A: ti.types.sparse_matrix_builder()):
     for i,j in ti.ndrange(n, n):
         A[ind(i,j), ind(i,j)] += 1
 
@@ -87,7 +87,7 @@ def diffuse(dt: ti.f32):
     ImcD = I - c*D
 
     # linear solve: factorize
-    solver = ti.SparseSolver(solver_type="LLT")
+    solver = ti.linalg.SparseSolver(solver_type="LLT")
     solver.analyze_pattern(ImcD)
     solver.factorize(ImcD)
 
